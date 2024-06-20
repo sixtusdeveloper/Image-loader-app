@@ -155,3 +155,23 @@ img {
   font-size: 1rem;
   color: #ffffff;
 }
+@media screen and (max-width: 1168px){
+  .text p{ 
+    width: 60%;
+  }
+}
+@media screen and (max-width: 768px){
+  .text p{ 
+    width: 80%;
+  }
+}
+@media screen and (max-width: 668px){
+  .text p{ 
+    width: 90%;
+  }
+}
+@media screen and (max-width: 568px){
+  .text p{ 
+    width: 95%;
+  }
+}
