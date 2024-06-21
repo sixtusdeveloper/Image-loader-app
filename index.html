@@ -6,46 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
   <link rel="stylesheet" href="static_style.css" />
-  <style>
-    /* Additional styles specific to this implementation */
-    .heart-container {
-      position: relative;
-      display: inline-block; /* Ensure it respects inline context */
-      cursor: pointer;
-    }
-
-    .heart-container .checkbox {
-      position: absolute;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .heart-container .svg-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .heart-container .svg-filled {
-      display: none;
-    }
-
-    .heart-container .svg-celebrate {
-      display: none;
-    }
-
-    .heart-container .checkbox:checked ~ .svg-container .svg-outline {
-      display: none;
-    }
-
-    .heart-container .checkbox:checked ~ .svg-container .svg-filled {
-      display: inline-block;
-    }
-
-    .heart-container .checkbox:checked ~ .svg-container .svg-celebrate {
-      display: inline-block;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" integrity="sha512-KfRwRjHRL4w6YyNjTjQxLQ+x4OzHxIVFz0NUQkThPSVmuFUt2/O4PM9PY1XztB0yYHHGFTv83eF8v9I7yVm1cQ==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+  <link rel="icon" href="favicon.ico" />
   <title>Photo Loader App</title>
 </head>
 <body>
@@ -103,9 +65,70 @@
   <div id="editModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <img id="editImage" src="" alt="Image to edit" />
-      <!-- Add more editing controls as needed -->
-      <button id="saveEdit">Save</button>
+      <div class="crop-container">
+        <img id="editImage" src="" alt="Image to edit" />
+        <span class="left-btn">
+        <!-- applyCrop btn here  <button id="applyCrop">Apply Crop</button> --->
+        <button class="accept-btn-1" id="saveEdit">Save</button>
+        <button class="accept-btn-2" id="reset">Reset</button>
+        </span>
+      </div>
+      <!-- Crop feature -->
+      <div class="crop-feature">
+        <h2>Crop Image</h2>
+        <div class="crop-instruction">
+          <p>Use the handles to crop the image as desired.</p>
+        </div>
+      </div>
+      <div class="crop-nav-items">
+        <ul class="example-2">
+          <li class="icon-content">
+            <a href="#" aria-label="crop" data-social="crop">
+              <div class="filled"></div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M20 19V21H16V19H4V21H0V19H0C0 17.8954 0.947715 17 2.11517 17H21.8848C23.0523 17 24 17.8954 24 19H20ZM24 15H0V3C0 1.89543 0.947715 1 2.11517 1H21.8848C23.0523 1 24 1.89543 24 3V15ZM6 5H10V9H6V5ZM20 5H16V7H20V5ZM10 15H6V11H10V15ZM20 11H16V13H20V11Z" fill="currentColor"/>
+              </svg>
+            </a>
+            <div class="tooltip">crop</div>
+          </li>
+          <li class="icon-content">
+            <a href="#" aria-label="Add Effect" data-social="effect">
+              <div class="filled"></div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 19.0719L6.92806 14H3V21H21V14H17.0719L12 19.0719ZM6.07195 12L12 17.0719L17.9281 12H21V3H3V12H6.07195ZM6.82821 8.82807L9 11H15L17.1719 8.82807L18.5858 10.242L15.4142 13.4142L12 16.8281L8.58579 13.4142L5.41421 10.242L6.82821 8.82807Z" fill="currentColor"/>
+              </svg>
+            </a>
+            <div class="tooltip">effect</div>
+          </li>
+          <li class="icon-content">
+            <a href="#" aria-label="resize" data-social="resize">
+              <div class="filled"></div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M13 6V11H18V13H13V18H11V13H6V11H11V6H13ZM2 2V22H22V2H2ZM20 20H4V4H20V20Z" fill="currentColor"/>
+              </svg>
+            </a>
+            <div class="tooltip">resize</div>
+          </li>
+          <li class="icon-content">
+            <a href="#" aria-label="text" data-social="text">
+              <div class="filled"></div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M16 2H8V4H16V2ZM18 6H6V8H18V6ZM12 10H6V12H12V10ZM18 10H14V12H18V10ZM18 14H6V16H18V14ZM18 18H6V20H18V18Z" fill="currentColor"/>
+              </svg>
+            </a>
+            <div class="tooltip">text</div>
+          </li>
+          <li class="icon-content">
+            <a href="#" aria-label="Settings" data-social="settings">
+              <div class="filled"></div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M21.1 13.8C20.7 13.3 20.1 13 19.5 13H18V11H19.5C20.1 11 20.7 10.7 21.1 10.2L22.9 8.4C23.3 7.9 23.5 7.3 23.5 6.7C23.5 5.7 22.8 5 21.8 5C21.2 5 20.7 5.3 20.3 5.7L18.5 7.5C17.4 6.9 16.3 6.5 15 6.5C13.7 6.5 12.6 6.9 11.5 7.5L9.7 5.7C9.3 5.3 8.8 5 8.2 5C7.2 5 6.5 5.7 6.5 6.7C6.5 7.3 6.7 7.9 7.1 8.4L8.9 10.2C9.3 10.7 9.9 11 10.5 11H12V13H10.5C9.9 13 9.3 13.3 8.9 13.8L7.1 15.6C6.7 16.1 6.5 16.7 6.5 17.3C6.5 18.3 7.2 19 8.2 19C8.8 19 9.3 18.7 9.7 18.3L11.5 16.5C12.6 17.1 13.7 17.5 15 17.5C16.3 17.5 17.4 17.1 18.5 16.5L20.3 18.3C20.7 18.7 21.2 19 21.8 19C22.8 19 23.5 18.3 23.5 17.3C23.5 16.7 23.3 16.1 22.9 15.6L21.1 13.8ZM12 15C10.3 15 9 13.7 9 12S10.3 9 12 9C13.7 9 15 10.3 15 12S13.7 15 12 15Z" fill="currentColor"/>
+              </svg>
+            </a>
+            <div class="tooltip">settings</div>
+          </li> 
+        </ul>
+      </div>
     </div>
   </div>
   
@@ -134,33 +157,8 @@
       </div>
     </div>
   </footer>
-    <script>
-    // Get the checkbox element
-      const checkbox = document.getElementById('like-checkbox');
-
-      // Add a change event listener to detect checkbox state changes
-      checkbox.addEventListener('change', function() {
-        const svgOutline = document.querySelector('.svg-outline');
-        const svgFilled = document.querySelector('.svg-filled');
-        const svgCelebrate = document.querySelector('.svg-celebrate');
-
-        // Toggle display based on checkbox state
-        if (this.checked) {
-          svgOutline.style.display = 'none';
-          svgFilled.style.display = 'inline-block';
-          svgCelebrate.style.display = 'inline-block';
-        } else {
-          svgOutline.style.display = 'inline-block';
-          svgFilled.style.display = 'none';
-          svgCelebrate.style.display = 'none';
-        }
-    });
-
-  </script>
   <!-- JavaScript -->
-  <script src="js/index.js">
-  
-  </script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js" integrity="sha512-w0TmkC84Ce/WfoSJnP8hsN9pbbX2CDtP/XX+7JeqNtnp6FFcVYlL8+yZzRxm1psZ6TWf+AScAnfBJLDBpKO0Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="js/index.js"></script>
 </body>
 </html>
