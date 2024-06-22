@@ -66,7 +66,6 @@ document.addEventListener("DOMContentLoaded", function () {
           editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
           editButton.addEventListener("click", function () {
             modal.style.display = "flex"; // Here I'm using flex to center content
-            modal.style.flexDirection = "row"; // Here I'm using flex to center content
             modalImg.src = img.src;
             document.body.classList.add("modal-open"); // I'm Preventing body scroll
           });

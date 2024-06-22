@@ -296,10 +296,6 @@ img {
   padding: 10px 20px;
   background-color: #007bff;
   color: white;
-  float: left;
-  flex-direction: row;
-  text-align: left;
-  justify-content: start;
   border: none;
   cursor: pointer;
   margin-right: 6px;
