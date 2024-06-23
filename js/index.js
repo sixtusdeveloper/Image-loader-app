@@ -1,5 +1,6 @@
 // The updated code logic now includes an edit modal that opens when an image is clicked. The user can edit the image in the modal and save the changes. The edited image is then displayed on the screen. The modal can be closed by clicking the close button or outside the modal area.
 
+
 document.addEventListener("DOMContentLoaded", function () {
   const uploadFiles = document.querySelector("#file");
   const result = document.querySelector("#result");
@@ -24,10 +25,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Constants for size limits
   const MAX_FILE_SIZE_BYTES = 962560; // 940 KB
-  const MAX_IMAGE_WIDTH = 1024; // Maximum width allowed
-  const MAX_IMAGE_HEIGHT = 1024; // Maximum height allowed
+  const MAX_IMAGE_WIDTH = 930; // Maximum width allowed
+  const MAX_IMAGE_HEIGHT = 1025; // Maximum height allowed
   const RESIZE_WIDTH = 1200; // Desired width for resized images
   const RESIZE_HEIGHT = 900; // Desired height for resized images
+  const MAX_EDIT_WIDTH = 930; // Maximum width for editing modal
+  const MAX_EDIT_HEIGHT = 1020; // Maximum height for editing modal
 
   // Function to display error message
   function displayErrorMessage(message) {
@@ -63,9 +66,13 @@ document.addEventListener("DOMContentLoaded", function () {
         autoCropArea: 1,
         movable: true,
         rotatable: true,
-        minContainerWidth: 800,
-        minContainerHeight: 600
+        minContainerWidth: 400, // Adjust based on your layout needs
+        minContainerHeight: 300, // Adjust based on your layout needs
+        maxContainerWidth: MAX_EDIT_WIDTH,
+        maxContainerHeight: MAX_EDIT_HEIGHT
       });
+    } else {
+      cropper.replace(imageSrc);
     }
   }
 
@@ -101,14 +108,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         hasValidImage = true;
 
-        // Check file size
-        if (files[i].size > MAX_FILE_SIZE_BYTES) {
-          displayErrorMessage(
-            "File size exceeds the maximum allowed size of 940 KB. Upload a smaller image."
-          );
-          continue; // Skip this file
-        }
-
         const picReader = new FileReader();
         picReader.addEventListener("load", function (event) {
           const picFile = event.target;
@@ -116,6 +115,22 @@ document.addEventListener("DOMContentLoaded", function () {
           const image = new Image();
           image.src = picFile.result;
           image.onload = function () {
+            // Check image dimensions
+            if (image.width > MAX_IMAGE_WIDTH || image.height > MAX_IMAGE_HEIGHT) {
+              displayErrorMessage(
+                `Image dimensions exceed the maximum allowed size of ${MAX_IMAGE_WIDTH} x ${MAX_IMAGE_HEIGHT}. Please upload a smaller image.`
+              );
+              return; // Skip further processing for this image
+            }
+
+            // Check file size
+            if (files[i].size > MAX_FILE_SIZE_BYTES) {
+              displayErrorMessage(
+                "File size exceeds the maximum allowed size of 940 KB. Upload a smaller image."
+              );
+              return; // Skip further processing for this file
+            }
+
             // Resize the image
             resizeImage(image, RESIZE_WIDTH, RESIZE_HEIGHT, function (resizedImageDataUrl) {
               const img = document.createElement("img");
@@ -146,8 +161,14 @@ document.addEventListener("DOMContentLoaded", function () {
               imageContainer.appendChild(options);
               result.appendChild(imageContainer);
 
-              displaySuccessMessage("Image uploaded successfully. You may now view it!"); // Display success message
-              updateNoImagesMessage();
+              progressBar.style.display = "block"; // Show progress bar
+
+              // Hide the progress bar after processing
+              setTimeout(() => {
+                progressBar.style.display = "none";
+                displaySuccessMessage("Image uploaded successfully. You may now view it!"); // Display success message
+                updateNoImagesMessage();
+              }, 2000); // Ensure the progress bar is displayed for 2 seconds
             });
           };
         });
@@ -157,16 +178,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (hasValidImage) {
         progressBar.style.display = "block"; // Show progress bar
-
-        // Hide the progress bar after processing
-        setTimeout(() => {
-          progressBar.style.display = "none";
-        }, 2000);
       } else {
         progressBar.style.display = "none";
       }
     } else {
-      displayErrorMessage("Your browser does not support File API."); // Display error message
+      progressBar.style.display = "block"; // Show progress bar
+
+      // Hide the progress bar after processing
+      setTimeout(() => {
+        progressBar.style.display = "none";
+        displayErrorMessage("Your browser does not support File API."); // Display error message
+      }, 2000); // Ensure the progress bar is displayed for 2 seconds
     }
   }
 
@@ -224,6 +246,988 @@ document.addEventListener("DOMContentLoaded", function () {
 
   updateNoImagesMessage();
 });
+
+
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   const uploadFiles = document.querySelector("#file");
+//   const result = document.querySelector("#result");
+//   const noImagesMessage = document.querySelector("#no-images-message");
+//   const progressBar = document.getElementById("progress-bar");
+
+//   // Hide the progress bar by default
+//   progressBar.style.display = "none";
+
+//   // Modal elements for error and success messages
+//   const errorModal = document.getElementById("errorModal");
+//   const closeErrorModal = document.querySelector("#errorModal .modal-close");
+
+//   const successModal = document.getElementById("successModal");
+//   const closeSuccessModal = document.querySelector("#successModal .modal-close");
+
+//   const editModal = document.getElementById("editModal");
+//   const closeEditModal = document.querySelector("#editModal .close");
+
+//   // Cropper variables
+//   let cropper = null;
+
+//   // Constants for size limits
+//   const MAX_FILE_SIZE_BYTES = 962560; // 940 KB
+//   const MAX_IMAGE_WIDTH = 1024; // Maximum width allowed
+//   const MAX_IMAGE_HEIGHT = 1024; // Maximum height allowed
+//   const RESIZE_WIDTH = 1200; // Desired width for resized images
+//   const RESIZE_HEIGHT = 900; // Desired height for resized images
+//   const MAX_EDIT_WIDTH = 930; // Maximum width for editing modal
+//   const MAX_EDIT_HEIGHT = 1020; // Maximum height for editing modal
+
+//   // Function to display error message
+//   function displayErrorMessage(message) {
+//     errorModal.querySelector(".modal-message").textContent = message;
+//     errorModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+//   }
+
+//   // Function to display success message
+//   function displaySuccessMessage(message) {
+//     successModal.querySelector(".modal-message").textContent = message;
+//     successModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+//   }
+
+//   // Function to display edit modal
+//   function displayEditModal(imageSrc) {
+//     const editModalImage = editModal.querySelector("img");
+//     editModalImage.src = imageSrc;
+//     editModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+
+//     // Initialize Cropper.js if not already initialized
+//     if (!cropper) {
+//       cropper = new Cropper(editModalImage, {
+//         aspectRatio: 4 / 3, // Example aspect ratio
+//         viewMode: 1, // Set the default view mode
+//         responsive: true,
+//         zoomable: true,
+//         scalable: true,
+//         modal: true,
+//         background: true,
+//         autoCropArea: 1,
+//         movable: true,
+//         rotatable: true,
+//         minContainerWidth: 400, // Adjust based on your layout needs
+//         minContainerHeight: 300, // Adjust based on your layout needs
+//         maxContainerWidth: MAX_EDIT_WIDTH,
+//         maxContainerHeight: MAX_EDIT_HEIGHT
+//       });
+//     } else {
+//       cropper.replace(imageSrc);
+//     }
+//   }
+
+//   // Handle file input change event
+//   uploadFiles.addEventListener("change", (e) => {
+//     handleFiles(e.target.files);
+//   });
+
+//   // Handle drag and drop events
+//   const dropArea = document.querySelector(".file-upload-label");
+//   dropArea.addEventListener("dragover", (e) => {
+//     e.preventDefault();
+//     dropArea.classList.add("drag-over");
+//   });
+
+//   dropArea.addEventListener("dragleave", () => {
+//     dropArea.classList.remove("drag-over");
+//   });
+
+//   dropArea.addEventListener("drop", (e) => {
+//     e.preventDefault();
+//     dropArea.classList.remove("drag-over");
+//     handleFiles(e.dataTransfer.files);
+//   });
+
+//   // Handle files function
+//   function handleFiles(files) {
+//     if (window.File && window.FileReader && window.FileList && window.Blob) {
+//       let hasValidImage = false;
+
+//       for (let i = 0; i < files.length; i++) {
+//         if (!files[i].type.match("image")) continue;
+
+//         hasValidImage = true;
+
+//         // Check file size
+//         if (files[i].size > MAX_FILE_SIZE_BYTES) {
+//           displayErrorMessage(
+//             "File size exceeds the maximum allowed size of 940 KB. Upload a smaller image."
+//           );
+//           continue; // Skip this file
+//         }
+
+//         const picReader = new FileReader();
+//         picReader.addEventListener("load", function (event) {
+//           const picFile = event.target;
+
+//           const image = new Image();
+//           image.src = picFile.result;
+//           image.onload = function () {
+//             // Resize the image
+//             resizeImage(image, RESIZE_WIDTH, RESIZE_HEIGHT, function (resizedImageDataUrl) {
+//               const img = document.createElement("img");
+//               img.classList.add("thumb-nail");
+//               img.src = resizedImageDataUrl;
+//               img.title = files[i].name;
+
+//               const imageContainer = document.createElement("div");
+//               imageContainer.classList.add("thumbnail");
+
+//               const options = document.createElement("div");
+//               options.classList.add("image-options");
+
+//               const editButton = document.createElement("button");
+//               editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
+//               editButton.addEventListener("click", function () {
+//                 // Display edit modal
+//                 displayEditModal(img.src);
+//               });
+
+//               const loveButton = document.createElement("button");
+//               loveButton.innerHTML = '<i class="fas fa-heart"></i> Love';
+
+//               options.appendChild(editButton);
+//               options.appendChild(loveButton);
+
+//               imageContainer.appendChild(img);
+//               imageContainer.appendChild(options);
+//               result.appendChild(imageContainer);
+
+//               progressBar.style.display = "block"; // Show progress bar
+
+//               // Hide the progress bar after processing
+//               setTimeout(() => {
+//                 progressBar.style.display = "none";
+//                 displaySuccessMessage("Image uploaded successfully. You may now view it!"); // Display success message
+//                 updateNoImagesMessage();
+//               }, 2000); // Ensure the progress bar is displayed for 2 seconds
+//             });
+//           };
+//         });
+
+//         picReader.readAsDataURL(files[i]);
+//       }
+
+//       if (hasValidImage) {
+//         progressBar.style.display = "block"; // Show progress bar
+//       } else {
+//         progressBar.style.display = "none";
+//       }
+//     } else {
+//       progressBar.style.display = "block"; // Show progress bar
+
+//       // Hide the progress bar after processing
+//       setTimeout(() => {
+//         progressBar.style.display = "none";
+//         displayErrorMessage("Your browser does not support File API."); // Display error message
+//       }, 2000); // Ensure the progress bar is displayed for 2 seconds
+//     }
+//   }
+
+//   // Function to resize image
+//   function resizeImage(image, width, height, callback) {
+//     const canvas = document.createElement("canvas");
+//     const ctx = canvas.getContext("2d");
+
+//     // Calculate the new dimensions while maintaining aspect ratio
+//     const aspectRatio = image.width / image.height;
+//     if (width / aspectRatio <= height) {
+//       canvas.width = width;
+//       canvas.height = width / aspectRatio;
+//     } else {
+//       canvas.width = height * aspectRatio;
+//       canvas.height = height;
+//     }
+
+//     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+//     const dataUrl = canvas.toDataURL("image/jpeg");
+//     callback(dataUrl);
+//   }
+
+//   // Close modals when the user clicks on <span> (x) or outside modal
+//   document.addEventListener("click", function (event) {
+//     if (event.target === errorModal || event.target === closeErrorModal) {
+//       errorModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+//     }
+//     if (event.target === successModal || event.target === closeSuccessModal) {
+//       successModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+//     }
+//     if (event.target === editModal || event.target === closeEditModal || event.target === editModal.querySelector(".modal-content")) {
+//       editModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+
+//       // Destroy Cropper.js instance if exists
+//       if (cropper) {
+//         cropper.destroy();
+//         cropper = null;
+//       }
+//     }
+//   });
+
+//   // Update the message visibility
+//   function updateNoImagesMessage() {
+//     if (result.children.length === 0) {
+//       noImagesMessage.style.display = "block";
+//     } else {
+//       noImagesMessage.style.display = "none";
+//     }
+//   }
+
+//   updateNoImagesMessage();
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Works fine but the image displays before the progress bar is finish running .
+// document.addEventListener("DOMContentLoaded", function () {
+//   const uploadFiles = document.querySelector("#file");
+//   const result = document.querySelector("#result");
+//   const noImagesMessage = document.querySelector("#no-images-message");
+//   const progressBar = document.getElementById("progress-bar");
+
+//   // Hide the progress bar by default
+//   progressBar.style.display = "none";
+
+//   // Modal elements for error and success messages
+//   const errorModal = document.getElementById("errorModal");
+//   const closeErrorModal = document.querySelector("#errorModal .modal-close");
+
+//   const successModal = document.getElementById("successModal");
+//   const closeSuccessModal = document.querySelector("#successModal .modal-close");
+
+//   const editModal = document.getElementById("editModal");
+//   const closeEditModal = document.querySelector("#editModal .close");
+
+//   // Cropper variables
+//   let cropper = null;
+
+//   // Constants for size limits
+//   const MAX_FILE_SIZE_BYTES = 962560; // 940 KB
+//   const MAX_IMAGE_WIDTH = 1024; // Maximum width allowed
+//   const MAX_IMAGE_HEIGHT = 1024; // Maximum height allowed
+//   const RESIZE_WIDTH = 1200; // Desired width for resized images
+//   const RESIZE_HEIGHT = 900; // Desired height for resized images
+
+//   // Function to display error message
+//   function displayErrorMessage(message) {
+//     setTimeout(() => {
+//       errorModal.querySelector(".modal-message").textContent = message;
+//       errorModal.style.display = "flex";
+//       document.body.classList.add("modal-open");
+//     }, 2000); // Delay the display of the error message by 2 seconds
+//   }
+
+//   // Function to display success message
+//   function displaySuccessMessage(message) {
+//     setTimeout(() => {
+//       successModal.querySelector(".modal-message").textContent = message;
+//       successModal.style.display = "flex";
+//       document.body.classList.add("modal-open");
+//     }, 2000); // Delay the display of the success message by 2 seconds
+//   }
+
+//   // Function to display edit modal
+//   function displayEditModal(imageSrc) {
+//     const editModalImage = editModal.querySelector("img");
+//     editModalImage.src = imageSrc;
+//     editModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+
+//     // Set max width and height for the image in edit modal
+//     editModalImage.style.maxWidth = "800px";  // Set maximum width
+//     editModalImage.style.maxHeight = "600px"; // Set maximum height
+
+//     // Initialize Cropper.js if not already initialized
+//     if (!cropper) {
+//       cropper = new Cropper(editModalImage, {
+//         aspectRatio: 4 / 3, // Example aspect ratio
+//         viewMode: 1, // Set the default view mode
+//         responsive: true,
+//         zoomable: true,
+//         scalable: true,
+//         modal: true,
+//         background: true,
+//         autoCropArea: 1,
+//         movable: true,
+//         rotatable: true,
+//         minContainerWidth: 800,
+//         minContainerHeight: 600
+//       });
+//     }
+//   }
+
+//   // Handle file input change event
+//   uploadFiles.addEventListener("change", (e) => {
+//     handleFiles(e.target.files);
+//   });
+
+//   // Handle drag and drop events
+//   const dropArea = document.querySelector(".file-upload-label");
+//   dropArea.addEventListener("dragover", (e) => {
+//     e.preventDefault();
+//     dropArea.classList.add("drag-over");
+//   });
+
+//   dropArea.addEventListener("dragleave", () => {
+//     dropArea.classList.remove("drag-over");
+//   });
+
+//   dropArea.addEventListener("drop", (e) => {
+//     e.preventDefault();
+//     dropArea.classList.remove("drag-over");
+//     handleFiles(e.dataTransfer.files);
+//   });
+
+//   // Handle files function
+//   function handleFiles(files) {
+//     if (window.File && window.FileReader && window.FileList && window.Blob) {
+//       let hasValidImage = false;
+
+//       for (let i = 0; i < files.length; i++) {
+//         if (!files[i].type.match("image")) continue;
+
+//         hasValidImage = true;
+
+//         // Check file size
+//         if (files[i].size > MAX_FILE_SIZE_BYTES) {
+//           progressBar.style.display = "block"; // Show progress bar
+
+//           // Hide the progress bar after processing
+//           setTimeout(() => {
+//             progressBar.style.display = "none";
+//             displayErrorMessage(
+//               "File size exceeds the maximum allowed size of 940 KB. Upload a smaller image."
+//             );
+//           }, 2000); // Ensure the progress bar is displayed for 2 seconds
+//           continue; // Skip this file
+//         }
+
+//         const picReader = new FileReader();
+//         picReader.addEventListener("load", function (event) {
+//           const picFile = event.target;
+
+//           const image = new Image();
+//           image.src = picFile.result;
+//           image.onload = function () {
+//             // Resize the image
+//             resizeImage(image, RESIZE_WIDTH, RESIZE_HEIGHT, function (resizedImageDataUrl) {
+//               const img = document.createElement("img");
+//               img.classList.add("thumb-nail");
+//               img.src = resizedImageDataUrl;
+//               img.title = files[i].name;
+
+//               const imageContainer = document.createElement("div");
+//               imageContainer.classList.add("thumbnail");
+
+//               const options = document.createElement("div");
+//               options.classList.add("image-options");
+
+//               const editButton = document.createElement("button");
+//               editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
+//               editButton.addEventListener("click", function () {
+//                 // Display edit modal
+//                 displayEditModal(img.src);
+//               });
+
+//               const loveButton = document.createElement("button");
+//               loveButton.innerHTML = '<i class="fas fa-heart"></i> Love';
+
+//               options.appendChild(editButton);
+//               options.appendChild(loveButton);
+
+//               imageContainer.appendChild(img);
+//               imageContainer.appendChild(options);
+//               result.appendChild(imageContainer);
+
+//               progressBar.style.display = "block"; // Show progress bar
+
+//               // Hide the progress bar after processing
+//               setTimeout(() => {
+//                 progressBar.style.display = "none";
+//                 displaySuccessMessage("Image uploaded successfully. You may now view it!"); // Display success message
+//                 updateNoImagesMessage();
+//               }, 2000); // Ensure the progress bar is displayed for 2 seconds
+//             });
+//           };
+//         });
+
+//         picReader.readAsDataURL(files[i]);
+//       }
+
+//       if (hasValidImage) {
+//         progressBar.style.display = "block"; // Show progress bar
+
+//         // Hide the progress bar after processing
+//         setTimeout(() => {
+//           progressBar.style.display = "none";
+//         }, 2000); // Ensure the progress bar is displayed for 2 seconds
+//       } else {
+//         progressBar.style.display = "none";
+//       }
+//     } else {
+//       progressBar.style.display = "block"; // Show progress bar
+
+//       // Hide the progress bar after processing
+//       setTimeout(() => {
+//         progressBar.style.display = "none";
+//         displayErrorMessage("Your browser does not support File API."); // Display error message
+//       }, 2000); // Ensure the progress bar is displayed for 2 seconds
+//     }
+//   }
+
+//   // Function to resize image
+//   function resizeImage(image, width, height, callback) {
+//     const canvas = document.createElement("canvas");
+//     const ctx = canvas.getContext("2d");
+
+//     // Calculate the new dimensions while maintaining aspect ratio
+//     const aspectRatio = image.width / image.height;
+//     if (width / aspectRatio <= height) {
+//       canvas.width = width;
+//       canvas.height = width / aspectRatio;
+//     } else {
+//       canvas.width = height * aspectRatio;
+//       canvas.height = height;
+//     }
+
+//     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+//     const dataUrl = canvas.toDataURL("image/jpeg");
+//     callback(dataUrl);
+//   }
+
+//   // Close modals when the user clicks on <span> (x) or outside modal
+//   document.addEventListener("click", function (event) {
+//     if (event.target === errorModal || event.target === closeErrorModal) {
+//       errorModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+//     }
+//     if (event.target === successModal || event.target === closeSuccessModal) {
+//       successModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+//     }
+//     if (event.target === editModal || event.target === closeEditModal || event.target === editModal.querySelector(".modal-content")) {
+//       editModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+
+//       // Destroy Cropper.js instance if exists
+//       if (cropper) {
+//         cropper.destroy();
+//         cropper = null;
+//       }
+//     }
+//   });
+
+//   // Update the message visibility
+//   function updateNoImagesMessage() {
+//     if (result.children.length === 0) {
+//       noImagesMessage.style.display = "block";
+//     } else {
+//       noImagesMessage.style.display = "none";
+//     }
+//   }
+
+//   updateNoImagesMessage();
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Handlying how images displays when in edit-mode. Not allowing the progress bar run to it finish before displaying Error or Success modal box
+// document.addEventListener("DOMContentLoaded", function () {
+//   const uploadFiles = document.querySelector("#file");
+//   const result = document.querySelector("#result");
+//   const noImagesMessage = document.querySelector("#no-images-message");
+//   const progressBar = document.getElementById("progress-bar");
+
+//   // Hide the progress bar by default
+//   progressBar.style.display = "none";
+
+//   // Modal elements for error and success messages
+//   const errorModal = document.getElementById("errorModal");
+//   const closeErrorModal = document.querySelector("#errorModal .modal-close");
+
+//   const successModal = document.getElementById("successModal");
+//   const closeSuccessModal = document.querySelector("#successModal .modal-close");
+
+//   const editModal = document.getElementById("editModal");
+//   const closeEditModal = document.querySelector("#editModal .close");
+
+//   // Cropper variables
+//   let cropper = null;
+
+//   // Constants for size limits
+//   const MAX_FILE_SIZE_BYTES = 962560; // 940 KB
+//   const MAX_IMAGE_WIDTH = 1024; // Maximum width allowed
+//   const MAX_IMAGE_HEIGHT = 1024; // Maximum height allowed
+//   const RESIZE_WIDTH = 1200; // Desired width for resized images
+//   const RESIZE_HEIGHT = 900; // Desired height for resized images
+
+//   // Function to display error message
+//   function displayErrorMessage(message) {
+//     errorModal.querySelector(".modal-message").textContent = message;
+//     errorModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+//   }
+
+//   // Function to display success message
+//   function displaySuccessMessage(message) {
+//     successModal.querySelector(".modal-message").textContent = message;
+//     successModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+//   }
+
+//   // Function to display edit modal
+//   function displayEditModal(imageSrc) {
+//     const editModalImage = editModal.querySelector("img");
+//     editModalImage.src = imageSrc;
+//     editModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+
+//     // Set max width and height for the image in edit modal
+//     editModalImage.style.maxWidth = "800px";  // Set maximum width
+//     editModalImage.style.maxHeight = "600px"; // Set maximum height
+
+//     // Initialize Cropper.js if not already initialized
+//     if (!cropper) {
+//       cropper = new Cropper(editModalImage, {
+//         aspectRatio: 4 / 3, // Example aspect ratio
+//         viewMode: 1, // Set the default view mode
+//         responsive: true,
+//         zoomable: true,
+//         scalable: true,
+//         modal: true,
+//         background: true,
+//         autoCropArea: 1,
+//         movable: true,
+//         rotatable: true,
+//         minContainerWidth: 800,
+//         minContainerHeight: 600
+//       });
+//     }
+//   }
+
+//   // Handle file input change event
+//   uploadFiles.addEventListener("change", (e) => {
+//     handleFiles(e.target.files);
+//   });
+
+//   // Handle drag and drop events
+//   const dropArea = document.querySelector(".file-upload-label");
+//   dropArea.addEventListener("dragover", (e) => {
+//     e.preventDefault();
+//     dropArea.classList.add("drag-over");
+//   });
+
+//   dropArea.addEventListener("dragleave", () => {
+//     dropArea.classList.remove("drag-over");
+//   });
+
+//   dropArea.addEventListener("drop", (e) => {
+//     e.preventDefault();
+//     dropArea.classList.remove("drag-over");
+//     handleFiles(e.dataTransfer.files);
+//   });
+
+//   // Handle files function
+//   function handleFiles(files) {
+//     if (window.File && window.FileReader && window.FileList && window.Blob) {
+//       let hasValidImage = false;
+
+//       for (let i = 0; i < files.length; i++) {
+//         if (!files[i].type.match("image")) continue;
+
+//         hasValidImage = true;
+
+//         // Check file size
+//         if (files[i].size > MAX_FILE_SIZE_BYTES) {
+//           displayErrorMessage(
+//             "File size exceeds the maximum allowed size of 940 KB. Upload a smaller image."
+//           );
+//           continue; // Skip this file
+//         }
+
+//         const picReader = new FileReader();
+//         picReader.addEventListener("load", function (event) {
+//           const picFile = event.target;
+
+//           const image = new Image();
+//           image.src = picFile.result;
+//           image.onload = function () {
+//             // Resize the image
+//             resizeImage(image, RESIZE_WIDTH, RESIZE_HEIGHT, function (resizedImageDataUrl) {
+//               const img = document.createElement("img");
+//               img.classList.add("thumb-nail");
+//               img.src = resizedImageDataUrl;
+//               img.title = files[i].name;
+
+//               const imageContainer = document.createElement("div");
+//               imageContainer.classList.add("thumbnail");
+
+//               const options = document.createElement("div");
+//               options.classList.add("image-options");
+
+//               const editButton = document.createElement("button");
+//               editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
+//               editButton.addEventListener("click", function () {
+//                 // Display edit modal
+//                 displayEditModal(img.src);
+//               });
+
+//               const loveButton = document.createElement("button");
+//               loveButton.innerHTML = '<i class="fas fa-heart"></i> Love';
+
+//               options.appendChild(editButton);
+//               options.appendChild(loveButton);
+
+//               imageContainer.appendChild(img);
+//               imageContainer.appendChild(options);
+//               result.appendChild(imageContainer);
+
+//               displaySuccessMessage("Image uploaded successfully. You may now view it!"); // Display success message
+//               updateNoImagesMessage();
+//             });
+//           };
+//         });
+
+//         picReader.readAsDataURL(files[i]);
+//       }
+
+//       if (hasValidImage) {
+//         progressBar.style.display = "block"; // Show progress bar
+
+//         // Hide the progress bar after processing
+//         setTimeout(() => {
+//           progressBar.style.display = "none";
+//         }, 2000);
+//       } else {
+//         progressBar.style.display = "none";
+//       }
+//     } else {
+//       displayErrorMessage("Your browser does not support File API."); // Display error message
+//     }
+//   }
+
+//   // Function to resize image
+//   function resizeImage(image, width, height, callback) {
+//     const canvas = document.createElement("canvas");
+//     const ctx = canvas.getContext("2d");
+
+//     // Calculate the new dimensions while maintaining aspect ratio
+//     const aspectRatio = image.width / image.height;
+//     if (width / aspectRatio <= height) {
+//       canvas.width = width;
+//       canvas.height = width / aspectRatio;
+//     } else {
+//       canvas.width = height * aspectRatio;
+//       canvas.height = height;
+//     }
+
+//     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+//     const dataUrl = canvas.toDataURL("image/jpeg");
+//     callback(dataUrl);
+//   }
+
+//   // Close modals when the user clicks on <span> (x) or outside modal
+//   document.addEventListener("click", function (event) {
+//     if (event.target === errorModal || event.target === closeErrorModal) {
+//       errorModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+//     }
+//     if (event.target === successModal || event.target === closeSuccessModal) {
+//       successModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+//     }
+//     if (event.target === editModal || event.target === closeEditModal || event.target === editModal.querySelector(".modal-content")) {
+//       editModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+
+//       // Destroy Cropper.js instance if exists
+//       if (cropper) {
+//         cropper.destroy();
+//         cropper = null;
+//       }
+//     }
+//   });
+
+//   // Update the message visibility
+//   function updateNoImagesMessage() {
+//     if (result.children.length === 0) {
+//       noImagesMessage.style.display = "block";
+//     } else {
+//       noImagesMessage.style.display = "none";
+//     }
+//   }
+
+//   updateNoImagesMessage();
+// });
+
+
+
+
+
+
+
+// This block of code is okay but do not include the logic that resizes the images to a specific size when in edit-mode
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   const uploadFiles = document.querySelector("#file");
+//   const result = document.querySelector("#result");
+//   const noImagesMessage = document.querySelector("#no-images-message");
+//   const progressBar = document.getElementById("progress-bar");
+
+//   // Hide the progress bar by default
+//   progressBar.style.display = "none";
+
+//   // Modal elements for error and success messages
+//   const errorModal = document.getElementById("errorModal");
+//   const closeErrorModal = document.querySelector("#errorModal .modal-close");
+
+//   const successModal = document.getElementById("successModal");
+//   const closeSuccessModal = document.querySelector("#successModal .modal-close");
+
+//   const editModal = document.getElementById("editModal");
+//   const closeEditModal = document.querySelector("#editModal .close");
+
+//   // Cropper variables
+//   let cropper = null;
+
+//   // Constants for size limits
+//   const MAX_FILE_SIZE_BYTES = 962560; // 940 KB
+//   const MAX_IMAGE_WIDTH = 1024; // Maximum width allowed
+//   const MAX_IMAGE_HEIGHT = 1024; // Maximum height allowed
+//   const RESIZE_WIDTH = 1200; // Desired width for resized images
+//   const RESIZE_HEIGHT = 900; // Desired height for resized images
+
+//   // Function to display error message
+//   function displayErrorMessage(message) {
+//     errorModal.querySelector(".modal-message").textContent = message;
+//     errorModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+//   }
+
+//   // Function to display success message
+//   function displaySuccessMessage(message) {
+//     successModal.querySelector(".modal-message").textContent = message;
+//     successModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+//   }
+
+//   // Function to display edit modal
+//   function displayEditModal(imageSrc) {
+//     const editModalImage = editModal.querySelector("img");
+//     editModalImage.src = imageSrc;
+//     editModal.style.display = "flex";
+//     document.body.classList.add("modal-open");
+
+//     // Initialize Cropper.js if not already initialized
+//     if (!cropper) {
+//       cropper = new Cropper(editModalImage, {
+//         aspectRatio: 4 / 3, // Example aspect ratio
+//         viewMode: 1, // Set the default view mode
+//         responsive: true,
+//         zoomable: true,
+//         scalable: true,
+//         modal: true,
+//         background: true,
+//         autoCropArea: 1,
+//         movable: true,
+//         rotatable: true,
+//         minContainerWidth: 800,
+//         minContainerHeight: 600
+//       });
+//     }
+//   }
+
+//   // Handle file input change event
+//   uploadFiles.addEventListener("change", (e) => {
+//     handleFiles(e.target.files);
+//   });
+
+//   // Handle drag and drop events
+//   const dropArea = document.querySelector(".file-upload-label");
+//   dropArea.addEventListener("dragover", (e) => {
+//     e.preventDefault();
+//     dropArea.classList.add("drag-over");
+//   });
+
+//   dropArea.addEventListener("dragleave", () => {
+//     dropArea.classList.remove("drag-over");
+//   });
+
+//   dropArea.addEventListener("drop", (e) => {
+//     e.preventDefault();
+//     dropArea.classList.remove("drag-over");
+//     handleFiles(e.dataTransfer.files);
+//   });
+
+//   // Handle files function
+//   function handleFiles(files) {
+//     if (window.File && window.FileReader && window.FileList && window.Blob) {
+//       let hasValidImage = false;
+
+//       for (let i = 0; i < files.length; i++) {
+//         if (!files[i].type.match("image")) continue;
+
+//         hasValidImage = true;
+
+//         // Check file size
+//         if (files[i].size > MAX_FILE_SIZE_BYTES) {
+//           displayErrorMessage(
+//             "File size exceeds the maximum allowed size of 940 KB. Upload a smaller image."
+//           );
+//           continue; // Skip this file
+//         }
+
+//         const picReader = new FileReader();
+//         picReader.addEventListener("load", function (event) {
+//           const picFile = event.target;
+
+//           const image = new Image();
+//           image.src = picFile.result;
+//           image.onload = function () {
+//             // Resize the image
+//             resizeImage(image, RESIZE_WIDTH, RESIZE_HEIGHT, function (resizedImageDataUrl) {
+//               const img = document.createElement("img");
+//               img.classList.add("thumb-nail");
+//               img.src = resizedImageDataUrl;
+//               img.title = files[i].name;
+
+//               const imageContainer = document.createElement("div");
+//               imageContainer.classList.add("thumbnail");
+
+//               const options = document.createElement("div");
+//               options.classList.add("image-options");
+
+//               const editButton = document.createElement("button");
+//               editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
+//               editButton.addEventListener("click", function () {
+//                 // Display edit modal
+//                 displayEditModal(img.src);
+//               });
+
+//               const loveButton = document.createElement("button");
+//               loveButton.innerHTML = '<i class="fas fa-heart"></i> Love';
+
+//               options.appendChild(editButton);
+//               options.appendChild(loveButton);
+
+//               imageContainer.appendChild(img);
+//               imageContainer.appendChild(options);
+//               result.appendChild(imageContainer);
+
+//               displaySuccessMessage("Image uploaded successfully. You may now view it!"); // Display success message
+//               updateNoImagesMessage();
+//             });
+//           };
+//         });
+
+//         picReader.readAsDataURL(files[i]);
+//       }
+
+//       if (hasValidImage) {
+//         progressBar.style.display = "block"; // Show progress bar
+
+//         // Hide the progress bar after processing
+//         setTimeout(() => {
+//           progressBar.style.display = "none";
+//         }, 2000);
+//       } else {
+//         progressBar.style.display = "none";
+//       }
+//     } else {
+//       displayErrorMessage("Your browser does not support File API."); // Display error message
+//     }
+//   }
+
+//   // Function to resize image
+//   function resizeImage(image, width, height, callback) {
+//     const canvas = document.createElement("canvas");
+//     const ctx = canvas.getContext("2d");
+
+//     // Calculate the new dimensions while maintaining aspect ratio
+//     const aspectRatio = image.width / image.height;
+//     if (width / aspectRatio <= height) {
+//       canvas.width = width;
+//       canvas.height = width / aspectRatio;
+//     } else {
+//       canvas.width = height * aspectRatio;
+//       canvas.height = height;
+//     }
+
+//     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+//     const dataUrl = canvas.toDataURL("image/jpeg");
+//     callback(dataUrl);
+//   }
+
+//   // Close modals when the user clicks on <span> (x) or outside modal
+//   document.addEventListener("click", function (event) {
+//     if (event.target === errorModal || event.target === closeErrorModal) {
+//       errorModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+//     }
+//     if (event.target === successModal || event.target === closeSuccessModal) {
+//       successModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+//     }
+//     if (event.target === editModal || event.target === closeEditModal || event.target === editModal.querySelector(".modal-content")) {
+//       editModal.style.display = "none";
+//       document.body.classList.remove("modal-open");
+
+//       // Destroy Cropper.js instance if exists
+//       if (cropper) {
+//         cropper.destroy();
+//         cropper = null;
+//       }
+//     }
+//   });
+
+//   // Update the message visibility
+//   function updateNoImagesMessage() {
+//     if (result.children.length === 0) {
+//       noImagesMessage.style.display = "block";
+//     } else {
+//       noImagesMessage.style.display = "none";
+//     }
+//   }
+
+//   updateNoImagesMessage();
+// });
 
 
 

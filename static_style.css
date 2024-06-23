@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Playwrite+US+Trad:wght@100..400&display=swap');
 
 * {
@@ -162,8 +163,8 @@ h1 {
 .thumb-nail {
   border: 1px solid #ffffff;
   border-radius: 8px;
-  height: 300px;
-  width: 310px;
+  height: 250px;
+  width: 280px;
   position: relative;
   object-fit: cover;
   transition: transform 0.3s, filter 0.3s;
@@ -668,3 +669,6 @@ ul {
 .modal-message.success {
   color: #4caf50; /* Green text color for success */
 }
+
+
+
