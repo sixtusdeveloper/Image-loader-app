@@ -10,6 +10,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalImg = document.getElementById("editImage");
   const closeModal = document.querySelector(".close");
 
+  // Cropper variables
+  let cropper = null;
+
+  // Constants for size limits
+  const MAX_FILE_SIZE_BYTES = 962560; // 940 KB
+
+  // Select error and success message containers
+  const errorMessageContainer = document.querySelector("#error-message");
+  const successMessageContainer = document.querySelector("#success-message");
+
   // Update the message visibility
   function updateNoImagesMessage() {
     if (result.children.length === 0) {
@@ -17,6 +27,18 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       noImagesMessage.style.display = "none";
     }
+  }
+
+  // Function to display error message
+  function displayErrorMessage(message) {
+    errorMessageContainer.textContent = message;
+    errorMessageContainer.style.display = "block";
+  }
+
+  // Function to display success message
+  function displaySuccessMessage(message) {
+    successMessageContainer.textContent = message;
+    successMessageContainer.style.display = "block";
   }
 
   // Handle file input change event
@@ -47,6 +69,12 @@ document.addEventListener("DOMContentLoaded", function () {
       for (let i = 0; i < files.length; i++) {
         if (!files[i].type.match("image")) continue;
 
+        // Check file size
+        if (files[i].size > MAX_FILE_SIZE_BYTES) {
+          displayErrorMessage("File size exceeds the maximum allowed size of 940 KB.");
+          continue; // Skip this file
+        }
+
         const picReader = new FileReader();
         picReader.addEventListener("load", function (event) {
           const picFile = event.target;
@@ -65,9 +93,19 @@ document.addEventListener("DOMContentLoaded", function () {
           const editButton = document.createElement("button");
           editButton.innerHTML = '<i class="fas fa-edit"></i> Edit';
           editButton.addEventListener("click", function () {
-            modal.style.display = "flex"; // Here I'm using flex to center content
+            // Display modal
+            modal.style.display = "flex";
             modalImg.src = img.src;
-            document.body.classList.add("modal-open"); // I'm Preventing body scroll
+            document.body.classList.add("modal-open");
+
+            // Initialize Cropper.js
+            if (cropper) {
+              cropper.destroy(); // Destroy previous instance if exists
+            }
+            cropper = new Cropper(modalImg, {
+              aspectRatio: 16 / 9, // Example aspect ratio
+              viewMode: 1, // Set the default view mode
+            });
           });
 
           const loveButton = document.createElement("button");
@@ -80,62 +118,45 @@ document.addEventListener("DOMContentLoaded", function () {
           imageContainer.appendChild(options);
           result.appendChild(imageContainer);
 
+          displaySuccessMessage("Image uploaded successfully."); // Display success message
           updateNoImagesMessage();
         });
 
         picReader.readAsDataURL(files[i]);
       }
     } else {
-      alert("Your browser does not support File API");
+      displayErrorMessage("Your browser does not support File API."); // Display error message
     }
   }
 
   // Close the modal when the user clicks on <span> (x)
   closeModal.onclick = function () {
     modal.style.display = "none";
-    document.body.classList.remove("modal-open"); // Allow body scroll
+    document.body.classList.remove("modal-open");
+
+    // Destroy Cropper.js instance
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
   };
 
   // Close the modal when the user clicks anywhere outside of the modal content
   window.onclick = function (event) {
     if (event.target == modal) {
       modal.style.display = "none";
-      document.body.classList.remove("modal-open"); // Allow body scroll
+      document.body.classList.remove("modal-open");
+
+      // Destroy Cropper.js instance
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
     }
   };
 
   updateNoImagesMessage();
 });
-
- // Get the checkbox element
- const checkbox = document.getElementById('like-checkbox');
-
- // Add a change event listener to detect checkbox state changes
- checkbox.addEventListener('change', function() {
-   const svgOutline = document.querySelector('.svg-outline');
-   const svgFilled = document.querySelector('.svg-filled');
-   const svgCelebrate = document.querySelector('.svg-celebrate');
-
-   // Toggle display based on checkbox state
-   if (this.checked) {
-     svgOutline.style.display = 'none';
-     svgFilled.style.display = 'inline-block';
-     svgCelebrate.style.display = 'inline-block';
-   } else {
-     svgOutline.style.display = 'inline-block';
-     svgFilled.style.display = 'none';
-     svgCelebrate.style.display = 'none';
-   }
-});
-
-
-
-
-
-
-
-
-
 
 
 

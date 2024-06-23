@@ -11,6 +11,10 @@
   <title>Photo Loader App</title>
 </head>
 <body>
+  <!-- Error and Success Messages -->
+  <div id="error-message" class="message-container"></div>
+  <div id="success-message" class="message-container"></div>
+
   <main>
     <h1 style="text-align: center;">Photo Loader App</h1>
     <div class="text">
@@ -31,9 +35,13 @@
           </div>
           <input type="file" id="file" accept="image/jpeg, image/png, image/jpg" multiple="multiple" /> 
         </label>
+        <div id="progress-container" style="display: none;">
+          <progress id="progress-bar" value="0" max="100"></progress>
+          <div id="progress-text">0%</div>
+        </div>
       </form>
     </div>
-      
+
     <div class="container">
       <div class="no-img-msg" id="no-images-message">Your images would appear here</div>
       <output class="result" id="result"></output>
@@ -160,5 +168,6 @@
   <!-- JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js" integrity="sha512-w0TmkC84Ce/WfoSJnP8hsN9pbbX2CDtP/XX+7JeqNtnp6FFcVYlL8+yZzRxm1psZ6TWf+AScAnfBJLDBpKO0Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="js/index.js"></script>
+  <script src="js/upload.js"></script> <!-- New JavaScript file for upload logic -->
 </body>
 </html>
