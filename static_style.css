@@ -115,24 +115,6 @@ h1 {
   background-color: rgb(14, 14, 14);
 }
 
-/* Progress Bar */
-#progress-container {
-  margin-top: 10px;
-  display: none; /* Initially hidden */
-}
-
-#progress-bar {
-  width: 100%;
-  height: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-#progress-text {
-  text-align: center;
-  margin-top: 5px;
-}
-
 /* Success and Error Messages */
 #success-message,
 #error-message {
@@ -181,7 +163,7 @@ h1 {
   border: 1px solid #ffffff;
   border-radius: 8px;
   height: 300px;
-  width: 350px;
+  width: 310px;
   position: relative;
   object-fit: cover;
   transition: transform 0.3s, filter 0.3s;
@@ -255,34 +237,28 @@ img {
   opacity: 0;
   cursor: pointer;
 }
-
 .heart-container .svg-container {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
 .heart-container .svg-filled,
 .heart-container .svg-celebrate {
   display: none;
 }
-
 .heart-container .checkbox:checked ~ .svg-container .svg-outline {
   display: none;
 }
-
 .heart-container .checkbox:checked ~ .svg-container .svg-filled,
 .heart-container .checkbox:checked ~ .svg-container .svg-celebrate {
   display: inline-block;
 }
-
 .close:hover,
 .close:focus {
   color: rgba(228, 163, 12, 0.963);
   text-decoration: none;
   cursor: pointer;
 }
-
 /* Styles for the modal */
 .modal {
   display: none;
@@ -297,7 +273,6 @@ img {
   justify-content: center;
   align-items: center;
 }
-
 /* Center modal content */
 .modal-content {
   background-color: #fefefe;
@@ -311,7 +286,6 @@ img {
   position: relative;
   display: flex;
 }
-
 /* Close button */
 .close {
   color: #007bff;
@@ -324,21 +298,18 @@ img {
   align-self: flex-start;
   margin-left: auto;
 }
-
 .crop-container {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
 .crop-container img {
   max-width: 100%;
   height: auto;
   border-radius: 10px;
   margin-bottom: 10px;
 }
-
 .crop-feature {
   flex: 0 0 30%;
   max-height: 100%;
@@ -352,17 +323,14 @@ img {
   border-left: 1px solid #ddd;
   overflow-y: auto;
 }
-
 .crop-feature h2 {
   font-size: 1.5rem;
   margin-bottom: 10px;
 }
-
 .crop-feature p {
   font-size: 1rem;
   color: #555;
 }
-
 .left-btn {
   display: flex;
   margin-top: auto;
@@ -371,7 +339,6 @@ img {
   text-align: left;
   justify-content: start;
 }
-
 .crop-container .accept-btn-1 {
   padding: 10px 20px;
   background-color: #007bff;
@@ -382,7 +349,6 @@ img {
   border-radius: 5px;
   transition: background-color 0.3s;
 }
-
 .crop-container .accept-btn-2 {
   padding: 10px 20px;
   background-color: rgba(12, 120, 115, 0.877);
@@ -392,20 +358,16 @@ img {
   border-radius: 5px;
   transition: background-color 0.3s;
 }
-
 .crop-container .accept-btn-1:hover {
   background-color: #09787b8c;
 }
-
 .crop-container .accept-btn-2:hover {
   background-color: #0056b3;
 }
-
 /* Prevent body scroll when modal is open */
 body.modal-open {
   overflow: hidden;
 }
-
 /* Additional styles */
 .no-img-msg {
   text-align: center;
@@ -416,12 +378,10 @@ body.modal-open {
   padding-left: 1rem;
   padding-right: 1rem;
 }
-
 .drag-over {
   border: 2px dashed #007bff;
   background-color: #f0f8ff;
 }
-
 /*=========================== .footer-container ========================*/
 .footer-container {
   background-color: rgb(10, 55, 55);
@@ -430,7 +390,6 @@ body.modal-open {
   padding: 12px;
   text-align: center;
 }
-
 /* footer */
 .footer-row {
   position: relative;
@@ -441,13 +400,11 @@ body.modal-open {
   padding: 1rem;
   text-align: center;
 }
-
 .footer-row i.fab {
   color: #f4f4f4;
   margin: 12px;
   font-size: 1.1rem;
 }
-
 /*=================== .copyright =========================*/
 .copyright {
   text-align: center;
@@ -455,19 +412,16 @@ body.modal-open {
   font-size: 1rem;
   color: #ffffff;
 }
-
 @media screen and (max-width: 1168px) {
   .text p {
     width: 60%;
   }
 }
-
 @media screen and (max-width: 768px) {
   .text p {
     width: 80%;
   }
 }
-
 @media screen and (max-width: 668px) {
   .text p {
     width: 90%;
@@ -479,7 +433,6 @@ body.modal-open {
     width: 95%;
   }
 }
-
 /* Crop controls */
 .crop-nav-items {
   display: flex;
@@ -493,11 +446,9 @@ body.modal-open {
   height: 100%;
   overflow: hidden;
 }
-
 ul {
   list-style: none;
 }
-
 .example-2 {
   background: aliceblue;
   display: flex;
@@ -513,12 +464,10 @@ ul {
   align-items: left;
   margin: 1rem 0px;
 }
-
 .example-2 .icon-content {
   margin: 0 10px;
   position: relative;
 }
-
 .example-2 .icon-content .tooltip {
   position: absolute;
   top: -10px;
@@ -532,13 +481,11 @@ ul {
   font-size: 14px;
   transition: all 0.3s ease;
 }
-
 .example-2 .icon-content:hover .tooltip {
   opacity: 1;
   visibility: visible;
   top: 6px;
 }
-
 .example-2 .icon-content a {
   position: relative;
   overflow: hidden;
@@ -552,22 +499,18 @@ ul {
   background-color: #ffff;
   transition: all 0.3s ease-in-out;
 }
-
 .example-2 .icon-content a:hover {
   box-shadow: 3px 2px 45px 0px rgb(0 0 0 / 50%);
 }
-
 .example-2 .icon-content a svg {
   position: relative;
   z-index: 1;
   width: 25px;
   height: 25px;
 }
-
 .example-2 .icon-content a:hover {
   color: white;
 }
-
 .example-2 .icon-content a .filled {
   position: absolute;
   top: auto;
@@ -578,32 +521,150 @@ ul {
   background-color: #000;
   transition: all 0.3s ease-in-out;
 }
-
 .example-2 .icon-content a:hover .filled {
   height: 100%;
 }
-
 .example-2 .icon-content a[data-social="crop"] .filled,
 .example-2 .icon-content a[data-social="crop"] ~ .tooltip {
   background-color: #1db954;
 }
-
 .example-2 .icon-content a[data-social="effect"] .filled,
 .example-2 .icon-content a[data-social="effect"] ~ .tooltip {
   background-color: #bd081c;
 }
-
 .example-2 .icon-content a[data-social="resize"] .filled,
 .example-2 .icon-content a[data-social="resize"] ~ .tooltip {
   background-color: #ea4c89;
 }
-
 .example-2 .icon-content a[data-social="text"] .filled,
 .example-2 .icon-content a[data-social="text"] ~ .tooltip {
   background-color: #0088cc;
 }
-
 .example-2 .icon-content a[data-social="settings"] .filled,
 .example-2 .icon-content a[data-social="settings"] ~ .tooltip {
   background-color: lightseagreen;
+}
+
+/* Loader */
+
+.loader {
+  width: 100%;
+  /* margin: 0 auto; */
+  height: 10px;
+  border-radius: 2px;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+}
+
+.loader::before {
+  content: "";
+  position: absolute;
+  background-color: rgb(9, 188, 9);
+  width: 0%;
+  height: 100%;
+  border-radius: 2px;
+  animation: load 3.5s ease-in-out infinite;
+  box-shadow: rgb(9, 188, 9) 0px 2px 29px 0px;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+@keyframes load {
+  50% {
+    width: 100%;
+  }
+
+  100% {
+    right: 0;
+    left: unset;
+  }
+}
+/*===================== Newly added ======================*/
+
+/* Modal styles */
+.modal-msg {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content-msg {
+  background-color: #fefefe;
+  position: relative;
+  margin: auto;
+  padding: 35px;
+  border: 2px solid #888;
+  width: 80%; /* Adjust width as needed */
+  max-width: 400px;
+  text-align: center;
+  border-radius: 28px;
+}
+
+.modal-close {
+  color: #aaa;
+  position: absolute;
+  top: 5px;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.modal-content-msg.error {
+  padding: 25px;
+  border-color: #f44336; /* Red border for error */
+  color: #f44336;
+  font-size: 1rem;
+}
+
+.modal-content-msg.success {
+  padding: 25px;
+  border-color: #4caf50; /* Green border for success */
+  color: #4caf50;
+  font-size: 1rem;
+}
+
+.modal-message.error {
+  color: #f44336; /* Red text color for error */
+}
+
+.modal-message.success {
+  color: #4caf50; /* Green text color for success */
 }

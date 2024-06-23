@@ -35,12 +35,15 @@
           </div>
           <input type="file" id="file" accept="image/jpeg, image/png, image/jpg" multiple="multiple" /> 
         </label>
-        <div id="progress-container" style="display: none;">
-          <progress id="progress-bar" value="0" max="100"></progress>
-          <div id="progress-text">0%</div>
-        </div>
+        
       </form>
     </div>
+     
+
+    <!-- Removed here --->
+
+
+
 
     <div class="container">
       <div class="no-img-msg" id="no-images-message">Your images would appear here</div>
@@ -140,6 +143,11 @@
     </div>
   </div>
   
+  <div class="loader-container" id="progress-bar">
+    <div class="loader"></div>
+  </div>
+
+  
   <!-- Footer section -->
   <footer class="footer-container">
     <div class="footer-row">
@@ -168,6 +176,25 @@
   <!-- JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js" integrity="sha512-w0TmkC84Ce/WfoSJnP8hsN9pbbX2CDtP/XX+7JeqNtnp6FFcVYlL8+yZzRxm1psZ6TWf+AScAnfBJLDBpKO0Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="js/index.js"></script>
-  <script src="js/upload.js"></script> <!-- New JavaScript file for upload logic -->
+
+ <!-- Error Modal Content -->
+    <div id="errorModal" class="modal-msg">
+      <div class="modal-overlay"></div>
+      <div class="modal-content-msg error">
+        <span class="modal-close">&times;</span>
+        <div class="modal-icon"><i class="fas fa-exclamation-circle"></i></div>
+        <div class="modal-message" id="errorModalMessage"></div>
+      </div>
+    </div>
+
+    <!-- Success Modal Content -->
+    <div id="successModal" class="modal-msg">
+      <div class="modal-overlay"></div>
+      <div class="modal-content-msg success">
+        <span class="modal-close">&times;</span>
+        <div class="modal-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="modal-message" id="successModalMessage"></div>
+      </div>
+    </div>
 </body>
 </html>
