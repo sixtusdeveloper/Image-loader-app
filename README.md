@@ -1,7 +1,7 @@
 # Image-Loader-App
 This's an Image Loader Application built using JS, HTML, CSS. It function is to upload images with a specific valid image extension.
 
-Check how it works on the web: ((https://image-loader-app-git-master-sixtus-projects.vercel.app/)
+Check how it works on the web: (https://image-loader-app.vercel.app/)
 
 
 
