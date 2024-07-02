@@ -5,4 +5,10 @@ Check how it works on the web: (https://image-loader-app.vercel.app/)
 
 
 
+
+
+
+
+
+
 ![Image-loader-app-sample](https://github.com/sixtusdeveloper/Image-Loader-App/assets/80200124/16f75e22-ecf2-4eb9-a17b-4a31eb1323b8)
